@@ -32,6 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .await
         .unwrap();
         repositories.sort_by(|a, b| b.stars.cmp(&a.stars));
+        repositories.truncate(10);
 
         for r in repositories {
             println!("{}", r)
