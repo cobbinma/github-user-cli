@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         repositories.sort_by(|a, b| b.stars.cmp(&a.stars));
 
         for r in repositories {
-            println!("{:?}", r)
+            println!("{}", r)
         }
     });
 
