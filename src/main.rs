@@ -1,11 +1,11 @@
+mod github;
 mod models;
 mod service;
-mod github;
 
+use crate::github::GitHub;
+use crate::service::{Config, Service};
 use clap::{App, Arg};
 use std::error::Error;
-use crate::github::GitHub;
-use crate::service::Service;
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -28,9 +28,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let repository_service = GitHub::new();
 
-    let service = Service::new(username.to_string(), repository_service);
+    let service = Service::new(Config {
+        username: username.to_string(),
+        repository_service,
+    });
 
-    let repositories = service.run().await?;
+    let repositories = service.get_repositories().await?;
 
     for r in repositories {
         println!("{}", r)

@@ -1,6 +1,6 @@
+use async_trait::async_trait;
 use serde::export::Formatter;
 use std::error::Error;
-use async_trait::async_trait;
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 #[serde(rename_all = "camelCase")]

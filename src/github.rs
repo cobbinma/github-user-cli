@@ -1,12 +1,12 @@
-use crate::models::{RepositoryService, Repository};
-use std::error::Error;
+use crate::models::{Repository, RepositoryService};
 use async_trait::async_trait;
+use std::error::Error;
 
 pub struct GitHub {}
 
 impl GitHub {
     pub fn new() -> Box<GitHub> {
-        Box::new(GitHub{})
+        Box::new(GitHub {})
     }
 }
 
