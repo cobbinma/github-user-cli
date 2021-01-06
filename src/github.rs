@@ -1,4 +1,4 @@
-use crate::models::{Repository, RepositoryService};
+use crate::models::{Repository, RepositoryClient};
 use async_trait::async_trait;
 use std::error::Error;
 
@@ -11,7 +11,7 @@ impl GitHub {
 }
 
 #[async_trait]
-impl RepositoryService for GitHub {
+impl RepositoryClient for GitHub {
     async fn get_repositories(&self, username: &str) -> Result<Vec<Repository>, Box<dyn Error>> {
         surf::get(format!("https://api.github.com/users/{}/repos", username))
             .recv_json()

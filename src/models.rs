@@ -14,8 +14,14 @@ pub struct Repository {
 }
 
 #[async_trait]
-pub trait RepositoryService {
+pub trait RepositoryClient {
     async fn get_repositories(&self, username: &str) -> Result<Vec<Repository>, Box<dyn Error>>;
+}
+
+pub trait CacheClient {
+    fn exists(&self) -> bool;
+    fn get_repositories(&self) -> Result<Vec<Repository>, Box<dyn Error>>;
+    fn set_repositories(&self, repositories: &[Repository]) -> Result<(), Box<dyn Error>>;
 }
 
 impl std::fmt::Display for Repository {

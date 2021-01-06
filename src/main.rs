@@ -1,12 +1,14 @@
+mod cache;
 mod github;
 mod models;
 mod service;
 
+use crate::cache::Cache;
 use crate::github::GitHub;
 use crate::service::{Config, Service};
 use clap::{App, Arg};
+use log::{debug, info};
 use std::error::Error;
-use log::{info, debug};
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -42,8 +44,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     debug!("clear cache: {}", clear_cache);
 
     let service = Service::new(Config {
+        cache_client: Cache::new(&username),
         username: username.to_string(),
-        repository_service: GitHub::new(),
+        repository_client: GitHub::new(),
         clear_cache,
     });
 
