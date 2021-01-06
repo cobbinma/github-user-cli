@@ -55,17 +55,27 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .help("save yaml output file")
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("github_token")
+                .short("t")
+                .long("github_token")
+                .value_name("TOKEN")
+                .help("personal github token")
+                .takes_value(true),
+        )
         .get_matches();
 
     let username = matches.value_of("username").unwrap();
     debug!("username: {}", username);
     let clear_cache = matches.is_present("clear_cache");
     debug!("clear cache: {}", clear_cache);
+    let token = matches.value_of("github_token");
+    debug!("username: {}", username);
 
     let service = Service::new(Config {
         cache_client: Cache::new(),
         username: username.to_string(),
-        repository_client: GitHub::new(),
+        repository_client: GitHub::new(token.map(From::from)),
         clear_cache,
     });
 

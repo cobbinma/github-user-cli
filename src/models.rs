@@ -32,6 +32,9 @@ pub trait CacheClient {
 
 impl Display for Repository {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        fn write_field(f: &mut Formatter<'_>, name: &str, value: &str) -> std::fmt::Result {
+            write!(f, "{} : {}, ", name.green(), value.blue())
+        }
         write_field(f, "name", &self.name)?;
         if let Some(d) = &self.description {
             write_field(f, "description", d)?;
@@ -39,8 +42,4 @@ impl Display for Repository {
         write_field(f, "url", &self.url)?;
         write_field(f, "stars", &self.stars.to_string())
     }
-}
-
-fn write_field(f: &mut Formatter<'_>, name: &str, value: &str) -> std::fmt::Result {
-    write!(f, "{} : {}, ", name.green(), value.blue())
 }

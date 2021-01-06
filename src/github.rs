@@ -2,11 +2,13 @@ use crate::models::{Repository, RepositoryClient};
 use async_trait::async_trait;
 use std::error::Error;
 
-pub struct GitHub {}
+pub struct GitHub {
+    token: Option<String>,
+}
 
 impl GitHub {
-    pub fn new() -> Box<GitHub> {
-        Box::new(GitHub {})
+    pub fn new(token: Option<String>) -> Box<GitHub> {
+        Box::new(GitHub { token })
     }
 }
 
