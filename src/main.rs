@@ -44,7 +44,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     debug!("clear cache: {}", clear_cache);
 
     let service = Service::new(Config {
-        cache_client: Cache::new(&username),
+        cache_client: Cache::new(),
         username: username.to_string(),
         repository_client: GitHub::new(),
         clear_cache,
