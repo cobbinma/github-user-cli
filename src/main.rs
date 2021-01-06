@@ -22,15 +22,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .required(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("clear_cache")
+                .short("cc")
+                .long("clear_cache")
+                .default_value("false")
+                .value_name("CLEAR_CACHE")
+                .help("clear cache"),
+        )
         .get_matches();
 
     let username = matches.value_of("username").unwrap();
-
-    let repository_service = GitHub::new();
+    let clear_cache = matches.is_present("clear_cache");
 
     let service = Service::new(Config {
         username: username.to_string(),
-        repository_service,
+        repository_service: GitHub::new(),
+        clear_cache,
     });
 
     let repositories = service.get_repositories().await?;

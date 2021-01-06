@@ -6,8 +6,9 @@ pub struct Service {
 }
 
 pub struct Config {
-    pub(crate) username: String,
-    pub(crate) repository_service: Box<dyn RepositoryService>,
+    pub username: String,
+    pub repository_service: Box<dyn RepositoryService>,
+    pub clear_cache: bool,
 }
 
 impl Service {
@@ -16,6 +17,7 @@ impl Service {
     }
 
     pub async fn get_repositories(&self) -> Result<Vec<Repository>, Box<dyn Error>> {
+        println!("{}", self.config.clear_cache);
         let mut repositories = self
             .config
             .repository_service
