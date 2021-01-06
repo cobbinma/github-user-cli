@@ -22,7 +22,11 @@ impl CacheClient for Cache {
         serde_json::from_reader(File::open(Path::new(&file_path))?).map_err(From::from)
     }
 
-    fn set_repositories(&self, username: &str, repositories: &[Repository]) -> Result<(), Box<dyn Error>> {
+    fn set_repositories(
+        &self,
+        username: &str,
+        repositories: &[Repository],
+    ) -> Result<(), Box<dyn Error>> {
         let file_path = format!("{}.json", username);
         serde_json::to_writer(File::create(Path::new(&file_path))?, &repositories)
             .map_err(From::from)

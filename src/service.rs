@@ -22,7 +22,9 @@ impl Service {
         let mut repositories: Vec<Repository> =
             if !self.config.clear_cache && self.config.cache_client.exists(&self.config.username) {
                 info!("getting repositories from cache");
-                self.config.cache_client.get_repositories(&self.config.username)?
+                self.config
+                    .cache_client
+                    .get_repositories(&self.config.username)?
             } else {
                 info!("getting repositories from repository client");
                 let repositories = self
@@ -32,7 +34,9 @@ impl Service {
                     .await?;
 
                 info!("setting repositories to cache");
-                self.config.cache_client.set_repositories(&self.config.username, &repositories)?;
+                self.config
+                    .cache_client
+                    .set_repositories(&self.config.username, &repositories)?;
 
                 repositories
             };

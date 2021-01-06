@@ -21,7 +21,11 @@ pub trait RepositoryClient {
 pub trait CacheClient {
     fn exists(&self, username: &str) -> bool;
     fn get_repositories(&self, username: &str) -> Result<Vec<Repository>, Box<dyn Error>>;
-    fn set_repositories(&self, username: &str, repositories: &[Repository]) -> Result<(), Box<dyn Error>>;
+    fn set_repositories(
+        &self,
+        username: &str,
+        repositories: &[Repository],
+    ) -> Result<(), Box<dyn Error>>;
 }
 
 impl std::fmt::Display for Repository {
