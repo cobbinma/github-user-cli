@@ -1,11 +1,11 @@
 mod models;
 
-use async_std::task;
 use clap::{App, Arg};
 use models::Repository;
 use std::error::Error;
 
-fn main() -> Result<(), Box<dyn Error>> {
+#[async_std::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     let matches = App::new("GitHub User CLI")
         .version("0.1.0")
         .author("Matthew Cobbing <cobbinma@gmail.com>")
@@ -23,21 +23,21 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let username = matches.value_of("username").unwrap();
 
-    task::block_on(async {
-        let mut repositories: Vec<Repository> = surf::get(format!(
-            "{}{}{}",
-            "https://api.github.com/users/", username, "/repos"
-        ))
-        .recv_json()
-        .await
-        .unwrap();
-        repositories.sort_by(|a, b| b.stars.cmp(&a.stars));
-        repositories.truncate(10);
+    let mut repositories = get_repositories(username).await?;
 
-        for r in repositories {
-            println!("{}", r)
-        }
-    });
+    repositories.sort_by(|a, b| b.stars.cmp(&a.stars));
+    repositories.truncate(10);
+
+    for r in repositories {
+        println!("{}", r)
+    }
 
     Ok(())
+}
+
+async fn get_repositories(username: &str) -> Result<Vec<Repository>, Box<dyn Error>> {
+    surf::get(format!("https://api.github.com/users/{}/repos", username))
+        .recv_json()
+        .await
+        .map_err(From::from)
 }
