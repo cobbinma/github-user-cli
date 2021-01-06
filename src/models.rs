@@ -5,6 +5,7 @@ use serde::export::Formatter;
 pub struct Repository {
     pub name: String,
     pub description: Option<String>,
+    #[serde(rename = "html_url")]
     pub url: String,
     #[serde(rename = "stargazers_count")]
     pub stars: i64,
