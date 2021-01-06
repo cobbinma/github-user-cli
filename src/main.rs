@@ -1,8 +1,11 @@
 mod models;
+mod service;
+mod github;
 
 use clap::{App, Arg};
-use models::Repository;
 use std::error::Error;
+use crate::github::GitHub;
+use crate::service::Service;
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -23,21 +26,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let username = matches.value_of("username").unwrap();
 
-    let mut repositories = get_repositories(username).await?;
+    let repository_service = GitHub::new();
 
-    repositories.sort_by(|a, b| b.stars.cmp(&a.stars));
-    repositories.truncate(10);
+    let service = Service::new(username.to_string(), repository_service);
+
+    let repositories = service.run().await?;
 
     for r in repositories {
         println!("{}", r)
     }
 
     Ok(())
-}
-
-async fn get_repositories(username: &str) -> Result<Vec<Repository>, Box<dyn Error>> {
-    surf::get(format!("https://api.github.com/users/{}/repos", username))
-        .recv_json()
-        .await
-        .map_err(From::from)
 }

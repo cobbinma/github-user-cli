@@ -616,6 +616,7 @@ name = "github-user-cli"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "async-trait",
  "clap",
  "serde",
  "serde_derive",
