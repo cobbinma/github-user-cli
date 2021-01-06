@@ -9,6 +9,9 @@ use crate::service::{Config, Service};
 use clap::{App, Arg};
 use log::{debug, info};
 use std::error::Error;
+use std::path::Path;
+use std::fs::File;
+use crate::models::Repository;
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -36,6 +39,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .value_name("CLEAR_CACHE")
                 .help("clear cache"),
         )
+        .arg(
+            Arg::with_name("save_json")
+                .short("j")
+                .long("save_json")
+                .value_name("PATH")
+                .help("save json output file")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("save_yaml")
+                .short("y")
+                .long("save_yaml")
+                .value_name("PATH")
+                .help("save yaml output file")
+                .takes_value(true),
+        )
         .get_matches();
 
     let username = matches.value_of("username").unwrap();
@@ -53,9 +72,45 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("getting repositories from service");
     let repositories = service.get_repositories().await?;
 
-    for r in repositories {
-        println!("{}", r)
-    }
+    let json_path = matches.value_of("save_json");
+    let yaml_path = matches.value_of("save_yaml");
 
-    Ok(())
+    match (json_path, yaml_path) {
+        (Some(path), None) => {
+            info!("saving json output {}", path);
+            save_json_output(path, &repositories)
+        },
+        (None, Some(path)) => {
+            info!("saving yaml output {}", path);
+            save_yaml_output(path, &repositories)
+        },
+        (Some(json_path), Some(yaml_path)) => {
+            info!("saving json output {}", json_path);
+            save_json_output(json_path, &repositories)?;
+            info!("saving yaml output {}", yaml_path);
+            save_yaml_output(yaml_path, &repositories)
+        },
+        (None, None) => {
+            for r in repositories {
+                println!("{}", r)
+            }
+            Ok(())
+        }
+    }
+}
+
+fn save_json_output(
+    path: &str,
+    repositories: &[Repository],
+) -> Result<(), Box<dyn Error>> {
+    serde_json::to_writer_pretty(File::create(Path::new(path))?, &repositories)
+        .map_err(From::from)
+}
+
+fn save_yaml_output(
+    path: &str,
+    repositories: &[Repository],
+) -> Result<(), Box<dyn Error>> {
+    serde_yaml::to_writer(File::create(Path::new(path))?, &repositories)
+        .map_err(From::from)
 }
