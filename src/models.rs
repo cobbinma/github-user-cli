@@ -1,6 +1,8 @@
 use async_trait::async_trait;
+use colored::*;
 use serde::export::Formatter;
 use std::error::Error;
+use std::fmt::Display;
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -28,13 +30,17 @@ pub trait CacheClient {
     ) -> Result<(), Box<dyn Error>>;
 }
 
-impl std::fmt::Display for Repository {
+impl Display for Repository {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "name: '{}', ", self.name)?;
+        write_field(f, "name", &self.name)?;
         if let Some(d) = &self.description {
-            write!(f, "description: '{}', ", d)?;
+            write_field(f, "description", d)?;
         };
-        write!(f, "url: '{}', ", self.url)?;
-        write!(f, "stars: '{}'", self.stars)
+        write_field(f, "url", &self.url)?;
+        write_field(f, "stars", &self.stars.to_string())
     }
+}
+
+fn write_field(f: &mut Formatter<'_>, name: &str, value: &str) -> std::fmt::Result {
+    write!(f, "{} : {}, ", name.green(), value.blue())
 }

@@ -5,13 +5,13 @@ mod service;
 
 use crate::cache::Cache;
 use crate::github::GitHub;
+use crate::models::Repository;
 use crate::service::{Config, Service};
 use clap::{App, Arg};
 use log::{debug, info};
 use std::error::Error;
-use std::path::Path;
 use std::fs::File;
-use crate::models::Repository;
+use std::path::Path;
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -76,20 +76,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let yaml_path = matches.value_of("save_yaml");
 
     match (json_path, yaml_path) {
-        (Some(path), None) => {
-            info!("saving json output {}", path);
-            save_json_output(path, &repositories)
-        },
-        (None, Some(path)) => {
-            info!("saving yaml output {}", path);
-            save_yaml_output(path, &repositories)
-        },
+        (Some(path), None) => save_json_output(path, &repositories),
+        (None, Some(path)) => save_yaml_output(path, &repositories),
         (Some(json_path), Some(yaml_path)) => {
-            info!("saving json output {}", json_path);
             save_json_output(json_path, &repositories)?;
-            info!("saving yaml output {}", yaml_path);
             save_yaml_output(yaml_path, &repositories)
-        },
+        }
         (None, None) => {
             for r in repositories {
                 println!("{}", r)
@@ -99,18 +91,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 }
 
-fn save_json_output(
-    path: &str,
-    repositories: &[Repository],
-) -> Result<(), Box<dyn Error>> {
-    serde_json::to_writer_pretty(File::create(Path::new(path))?, &repositories)
-        .map_err(From::from)
+fn save_json_output(path: &str, repositories: &[Repository]) -> Result<(), Box<dyn Error>> {
+    info!("saving json output {}", path);
+    serde_json::to_writer_pretty(File::create(Path::new(path))?, &repositories).map_err(From::from)
 }
 
-fn save_yaml_output(
-    path: &str,
-    repositories: &[Repository],
-) -> Result<(), Box<dyn Error>> {
-    serde_yaml::to_writer(File::create(Path::new(path))?, &repositories)
-        .map_err(From::from)
+fn save_yaml_output(path: &str, repositories: &[Repository]) -> Result<(), Box<dyn Error>> {
+    info!("saving yaml output {}", path);
+    serde_yaml::to_writer(File::create(Path::new(path))?, &repositories).map_err(From::from)
 }
