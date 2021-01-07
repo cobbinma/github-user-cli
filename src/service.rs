@@ -19,7 +19,7 @@ impl Service {
     }
 
     pub async fn get_repositories(&self) -> Result<Vec<Repository>, Box<dyn Error>> {
-        let mut repositories: Vec<Repository> =
+        let mut repositories =
             if !self.config.clear_cache && self.config.cache_client.exists(&self.config.username) {
                 info!("getting repositories from cache");
                 self.config
