@@ -3,6 +3,8 @@ use async_trait::async_trait;
 use base64::encode;
 use std::error::Error;
 
+const GITHUB_BASE_URL: &str = "https://api.github.com";
+
 pub struct GitHub {
     url: String,
     token: Option<String>,
@@ -12,7 +14,7 @@ impl GitHub {
     pub fn new(url: Option<String>, token: Option<String>) -> Box<GitHub> {
         Box::new(GitHub {
             token,
-            url: url.unwrap_or("https://api.github.com".to_string()),
+            url: url.unwrap_or_else(|| GITHUB_BASE_URL.to_string()),
         })
     }
 }
@@ -65,9 +67,7 @@ mod tests {
         });
         let client = GitHub::new(Some(server.base_url()), Some("TOKEN".to_string()));
 
-        let result = client
-            .get_repositories("cobbinma")
-            .await;
+        let result = client.get_repositories("cobbinma").await;
 
         mock.assert();
         assert_eq!(result.is_ok(), true);
@@ -100,9 +100,7 @@ mod tests {
         });
         let client = GitHub::new(Some(server.base_url()), None);
 
-        let result = client
-            .get_repositories("cobbinma")
-            .await;
+        let result = client.get_repositories("cobbinma").await;
 
         mock.assert();
         assert_eq!(result.is_ok(), true);
