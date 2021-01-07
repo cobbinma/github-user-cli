@@ -94,7 +94,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
         (None, None) => {
             for r in repositories {
-                println!("{}", r)
+                println!("{}", r);
             }
             Ok(())
         }
