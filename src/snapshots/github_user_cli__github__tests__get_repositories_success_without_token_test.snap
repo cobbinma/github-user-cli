@@ -1,0 +1,18 @@
+---
+source: src/github.rs
+expression: "&repositories"
+---
+[
+  {
+    "name": "example-go-api",
+    "description": "Example Go REST API",
+    "html_url": "https://github.com/cobbinma/example-go-api",
+    "stargazers_count": 63
+  },
+  {
+    "name": "r-cache",
+    "description": "r-cache is an in memory key value store. It is thread safe and values can have expiry times",
+    "html_url": "https://github.com/cobbinma/r-cache",
+    "stargazers_count": 6
+  }
+]

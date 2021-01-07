@@ -19,3 +19,7 @@ env_logger = "0.8.2"
 serde_yaml = "0.8.15"
 colored = "2.0.0"
 base64 = "0.13.0"
+
+[dev-dependencies]
+httpmock = "0.5.2"
+insta = "1.5.2"

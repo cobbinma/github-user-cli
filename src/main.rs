@@ -75,7 +75,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let service = Service::new(Config {
         cache_client: Cache::new(),
         username: username.to_string(),
-        repository_client: GitHub::new(token.map(From::from)),
+        repository_client: GitHub::new(None, token.map(From::from)),
         clear_cache,
     });
 
